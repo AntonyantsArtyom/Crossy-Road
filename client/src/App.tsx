@@ -1,55 +1,39 @@
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Chicken } from "./shared/GameModels/Chicken";
+import { useEffect, useRef, useState, type MutableRefObject } from "react";
+import type { Group } from "three";
+import * as THREE from "three";
 
-function Chicken() {
-  // Простая курочка из блоков (кубов)
-  return (
-    <group position={[0, 0.5, 0]}>
-      <mesh position={[0, 0.25, 0]}>
-        <boxGeometry args={[1, 0.5, 1]} />
-        <meshStandardMaterial color="yellow" />
-      </mesh>
-      <mesh position={[0, 0.75, 0.4]}>
-        <boxGeometry args={[0.4, 0.4, 0.4]} />
-        <meshStandardMaterial color="orange" />
-      </mesh>
-    </group>
-  );
+interface CameraFollowProps {
+  targetRef: MutableRefObject<THREE.Object3D | null>;
 }
 
-function Tree() {
-  return (
-    <group position={[-3, 0, -3]}>
-      <mesh position={[0, 1, 0]}>
-        <cylinderGeometry args={[0.3, 0.3, 2, 12]} />
-        <meshStandardMaterial color="#8B4513" />
-      </mesh>
-      <mesh position={[0, 2.5, 0]}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshStandardMaterial color="green" />
-      </mesh>
-    </group>
-  );
-}
+function CameraFollow({ targetRef }: CameraFollowProps) {
+  const { camera } = useThree();
 
-function Road() {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-      <planeGeometry args={[10, 4]} />
-      <meshStandardMaterial color="gray" />
-    </mesh>
-  );
+  useFrame(() => {
+    if (targetRef!.current) {
+      const targetPos = targetRef.current.position.clone();
+      targetPos.y += 8;
+      targetPos.z -= 4;
+      camera.position.lerp(targetPos, 0.1);
+      camera.lookAt(targetRef.current.position);
+    }
+  });
+
+  return null;
 }
 
 export default function App() {
+  const chickenRef = useRef<Group>(null);
+  const [position] = useState<[number, number, number]>([0, 0, 0]);
+
   return (
-    <Canvas camera={{ position: [0, 5, 9], fov: 50 }}>
+    <Canvas style={{ height: "400px" }} camera={{ position: [0, 5, 9], fov: 50 }}>
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={1} />
-      <Road />
-      <Chicken />
-      <Tree />
-      <OrbitControls />
+      <Chicken ref={chickenRef} position={position} />
+      <CameraFollow targetRef={chickenRef} />
     </Canvas>
   );
 }
