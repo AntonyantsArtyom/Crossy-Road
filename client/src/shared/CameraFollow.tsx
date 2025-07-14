@@ -13,8 +13,8 @@ export const CameraFollow = ({ targetRef }: CameraFollowProps) => {
     if (targetRef!.current) {
       const targetPos = targetRef.current.position.clone();
       targetPos.y += 8;
-      targetPos.z -= 4;
-      camera.position.lerp(targetPos, 0.1);
+      targetPos.z += 1;
+      camera.position.lerp(targetPos, 1);
       camera.lookAt(targetRef.current.position);
     }
   });
