@@ -6,49 +6,51 @@ import { CameraFollow } from "./shared/CameraFollow";
 
 export default function App() {
   const chickenRef = useRef<Group>(null);
-  const [position, setPosition] = useState<[number, number, number]>([0, 0, 0]);
-  const [rotation, setRotation] = useState(0);
+  const [targetPosition, setTargetPosition] = useState<[number, number, number]>([0, 0, 0]);
+  const [targetRotation, setTargetRotation] = useState<number>(0);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      let newPos = [...position] as [number, number, number];
-      let newRot = rotation;
+      setTargetPosition((prev) => {
+        let [x, y, z] = prev;
+        let newRot = targetRotation;
 
-      switch (e.key) {
-        case "ArrowLeft":
-          newRot = Math.PI / 2;
-          newPos[0] -= 1;
-          break;
-        case "ArrowRight":
-          newRot = -Math.PI / 2;
-          newPos[0] += 1;
-          break;
-        case "ArrowUp":
-          newRot = 0;
-          newPos[2] -= 1;
-          break;
-        case "ArrowDown":
-          newRot = Math.PI;
-          newPos[2] += 1;
-          break;
-        default:
-          return;
-      }
+        switch (e.key) {
+          case "ArrowLeft":
+            x -= 1;
+            newRot = Math.PI / 2;
+            break;
+          case "ArrowRight":
+            x += 1;
+            newRot = -Math.PI / 2;
+            break;
+          case "ArrowUp":
+            z -= 1;
+            newRot = 0;
+            break;
+          case "ArrowDown":
+            z += 1;
+            newRot = Math.PI;
+            break;
+          default:
+            return prev;
+        }
 
-      setPosition(newPos);
-      setRotation(newRot);
+        setTargetRotation(newRot);
+        return [x, y, z];
+      });
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [position, rotation]);
+  }, [targetRotation]);
 
   return (
     <Canvas style={{ height: "400px" }} camera={{ position: [0, 5, 9], fov: 50 }}>
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={1} />
-      <Chicken ref={chickenRef} position={position} rotation={rotation} />
-      <Chicken position={[0, 0, 0]} rotation={0} />
+      <Chicken ref={chickenRef} targetPosition={targetPosition} targetRotation={targetRotation} />
+      <Chicken targetPosition={[0, 0, 0]} targetRotation={0} />
       <CameraFollow targetRef={chickenRef} />
     </Canvas>
   );

@@ -1,8 +1,27 @@
-import type { Group } from "three";
+import { useFrame } from "@react-three/fiber";
+import { forwardRef, useImperativeHandle, useRef } from "react";
+import { Vector3, type Group } from "three";
 
-export const Chicken = ({ position, rotation, ref }: { position: [number, number, number]; rotation: number; ref?: React.Ref<Group> }) => {
+interface ChickenProps {
+  targetPosition: [number, number, number];
+  targetRotation: number;
+}
+
+export const Chicken = forwardRef<Group, ChickenProps>(({ targetPosition, targetRotation }, ref) => {
+  const innerRef = useRef<Group>(null!);
+  useImperativeHandle(ref, () => innerRef.current);
+
+  useFrame(() => {
+    if (!innerRef.current) return;
+    innerRef.current.position.lerp(new Vector3(...targetPosition), 0.1);
+    const currentY = innerRef.current.rotation.y;
+    let delta = targetRotation - currentY;
+    delta = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
+    innerRef.current.rotation.y += delta * 0.1;
+  });
+
   return (
-    <group position={position} rotation={[0, rotation, 0]} ref={ref}>
+    <group ref={innerRef}>
       <group rotation={[0, Math.PI, 0]}>
         {/* Ноги */}
         <mesh position={[-0.15, 0.1, 0]}>
@@ -84,4 +103,4 @@ export const Chicken = ({ position, rotation, ref }: { position: [number, number
       </group>
     </group>
   );
-};
+});
