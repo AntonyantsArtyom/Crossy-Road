@@ -17,14 +17,7 @@ services:
       context: ./server
       dockerfile: Dockerfile.dev
     ports:
-      - 3000:3000
-    develop:
-      watch:
-        - action: sync
-          path: ./server/src
-          target: /app/src
-
-        - action: rebuild
-          path: package.json
-          target: /app
+      - "3000:3000"
+    volumes:
+      - ./server:/app:cached
     working_dir: /app
