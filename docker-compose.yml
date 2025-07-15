@@ -11,3 +11,14 @@ services:
     working_dir: /app
     environment:
       - HOST=0.0.0.0
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app:cached
+      - /app/node_modules
+    working_dir: /app
