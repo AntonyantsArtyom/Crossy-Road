@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { type Group } from "three";
 import { CameraFollow } from "./shared/CameraFollow";
 import { useUserControl } from "./shared/useUserControl";
-import { GroundGrid } from "./shared/GroundGrid";
+import { GroundGrid } from "./shared/mapGeneration/GroundGrid";
 
 export default function App() {
   const chickenRef = useRef<Group>(null);

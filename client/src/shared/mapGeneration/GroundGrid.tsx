@@ -1,21 +1,6 @@
-import { Plane } from "./gameModels/Plane";
-import alea from "alea";
-import { createNoise2D } from "simplex-noise";
-
-const SEED = "15t";
-const GRID_SIZE = 20;
-const MIN_ROAD_WIDTH = 4;
-const MAX_ROAD_WIDTH = 8;
-
-const seedFn = alea(SEED);
-const noise2D = createNoise2D(seedFn);
-const roadSeedFn = alea(SEED + "-road");
-const roadWidth = Math.floor(roadSeedFn() * (MAX_ROAD_WIDTH - MIN_ROAD_WIDTH + 1)) + MIN_ROAD_WIDTH;
-const ROAD_START_Z = -GRID_SIZE / 2;
-
-function isRoad(x: number, z: number): boolean {
-  return z >= ROAD_START_Z && z < ROAD_START_Z + roadWidth;
-}
+import { Plane } from "../gameModels/Plane";
+import { noise2D, GRID_SIZE } from "./constants";
+import { isRoad } from "./utils/isRoad";
 
 function getGrassColor(x: number, z: number): string {
   if (isRoad(x, z)) return "hsl(0, 0%, 40%)";
