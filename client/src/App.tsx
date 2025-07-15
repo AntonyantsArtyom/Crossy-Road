@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { type Group } from "three";
 import { CameraFollow } from "./shared/CameraFollow";
 import { useUserControl } from "./shared/useUserControl";
-import { Plane } from "./shared/gameModels/Plane";
+import { GroundGrid } from "./shared/GroundGrid";
 
 export default function App() {
   const chickenRef = useRef<Group>(null);
@@ -15,7 +15,7 @@ export default function App() {
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={1} />
       <Chicken ref={chickenRef} targetPosition={targetPosition} targetRotation={targetRotation} />
-      <Plane x={0} y={0} />
+      <GroundGrid />
       <CameraFollow targetRef={chickenRef} />
     </Canvas>
   );
