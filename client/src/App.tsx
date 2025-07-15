@@ -6,6 +6,7 @@ import { CameraFollow } from "./shared/CameraFollow";
 import { useUserControl } from "./shared/useUserControl";
 import { GroundGrid } from "./shared/mapGeneration/GroundGrid";
 import { socket } from "./socket";
+import { Forest } from "./shared/mapGeneration/Forest";
 
 export default function App() {
   const chickenRef = useRef<Group>(null);
@@ -50,6 +51,7 @@ export default function App() {
         <Chicken key={id} targetPosition={[data.x, 0, data.y]} targetRotation={data.rotation} />
       ))}
       <GroundGrid />
+      <Forest />
       <CameraFollow targetRef={chickenRef} />
     </Canvas>
   );
